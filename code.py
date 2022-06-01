@@ -8,7 +8,7 @@ try:
     import requests
 except:
     os.system("pip install requests")
-
+    import requests
 root = Tk()
 
 
