@@ -1,9 +1,17 @@
 import webbrowser as wb 
 from tkinter import *
-import requests
+import os
 import time
 from datetime import datetime
+
+try:
+    import requests
+except:
+    os.system("pip install requests")
+
 root = Tk()
+
+
 
 
 #### Constants
@@ -47,12 +55,13 @@ def make_file():
     response = requests.post('https://support.econjobmarket.org/oauth2/token', data=data)
 
     access_toke= response.json()['access_token']
-    print( access_toke)
+    
     
     list=[user,password,ref_token,access_toke]
     with open  ('user.dat','w') as f:
         for word in list:
             f.write(word+" ")
+    return  access_toke
 
 
 def file_y_n():
@@ -89,10 +98,20 @@ def get_data(access_toke):
 
     return slice
 
+b=0
 
 
-def get_new_access_toke(user,passowrd,ref_token):
-    print(ref_token)
+def get_new_access_toke(user,passoword):
+
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    data = 'client_id=support_token_server&client_secret=4support_token2work&grant_type=password&username={}&password={}'
+    data=data.format(user, passoword)
+
+    response = requests.post('https://support.econjobmarket.org/oauth2/token', headers=headers, data=data)
+    ref_token=response.json()['refresh_token']
+
     data = {
         'client_id': 'support_token_server',
         'client_secret': '4support_token2work',
@@ -101,14 +120,13 @@ def get_new_access_toke(user,passowrd,ref_token):
     }
 
     response = requests.post('https://support.econjobmarket.org/oauth2/token', data=data)
-    print(response.json())
     try:
         access_toke= response.json()['access_token']
-        print(access_toke)
+        
     except(KeyError):
         return 2
     
-    list=[user,passowrd,ref_token,access_toke]
+    list=[user,passoword,ref_token,access_toke]
     with open  ('user.dat','w') as f:
         for word in list:
             f.write(word+" ")
@@ -118,23 +136,14 @@ def get_new_access_toke(user,passowrd,ref_token):
 
 def run():
     sd =file_y_n()
-    print(sd[2])
     a=get_data(sd[3])
     if (a== 0):
-        b=get_new_access_toke(sd[0],sd[1],sd[2])
-        if (b==2):
-            make_file()
-            sd =file_y_n()
-            b=get_new_access_toke(sd[0],sd[1],sd[2])
-            a=get_data(b)
-           
-        else:
-            a=get_data(b)
-            
+        b=get_new_access_toke(sd[0],sd[1])      
+        a=get_data(b)
     return(a)
 
 
-b=0
+
 
 
 def starter():
