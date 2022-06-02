@@ -8,7 +8,7 @@ try:
     import requests
 except:
     os.system("pip install requests")
-    import requests
+
 root = Tk()
 
 
@@ -36,9 +36,9 @@ def make_file():
     }
     data = 'client_id=support_token_server&client_secret=4support_token2work&grant_type=password&username={}&password={}'
     print('Enter your ejm user name')
-    user = input()
+    user = input().strip(' ')
     print('Enter your ejm password')
-    password= input()
+    password= input().strip(' ')
     data=data.format(user, password)
 
     response = requests.post('https://support.econjobmarket.org/oauth2/token', headers=headers, data=data)
@@ -98,7 +98,6 @@ def get_data(access_toke):
 
     return slice
 
-b=0
 
 
 def get_new_access_toke(user,passoword):
@@ -143,28 +142,16 @@ def run():
     return(a)
 
 
-
-
+b=0
 
 def starter():
     global b
-    a=time.perf_counter()
-
-    if(a-b> 20):
-        dict = run()
+    dict = run()
     #list=response.json()
-        dict1=run()
-        dict2=run()
-        b=time.perf_counter()
-        list=dict+dict1+dict2
-    else:
-        time.sleep(20-(b-a))
-        dict = run()
-        dict1=run()
-        dict2=run()
-        
-        b=time.perf_counter()
-        list=dict+dict1+dict2
+    dict1=run()
+    dict2=run()
+    b=time.perf_counter()
+    list=dict+dict1+dict2
     
     i=0
     curslice = []
@@ -185,7 +172,7 @@ def func(count):
     data=slices[count]
     searcher(data)
 
-    
+     
 def searcher(data): #opens the tabs
     print(data)
     for i in range(0,3):
@@ -202,13 +189,18 @@ root.geometry("500x500")
 root.title("Test")
 
 
+def do_things():
+    starter()
+    count+=1
+    func(count)
+    #display.configure(text=len(slices)-count)
+
+
 def button_press():
-    global count
+    global count, b
+    a=time.perf_counter()
     if one:
-        starter()
-        count+=1
-        func(count)
-        #display.configure(text=len(slices)-count)
+        root.after([20000, 0][a-b> 20], do_things)
 '''
     if two:
         global ticker
@@ -225,4 +217,5 @@ one.pack(side="bottom")
 #two.pack(side="left")
 
 root.mainloop()
+
 
