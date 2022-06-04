@@ -188,8 +188,10 @@ def searcher(data): #opens the tabs
 root.geometry("500x500")
 root.title("Test")
 
+count=0
 
 def do_things():
+    global count
     starter()
     count+=1
     func(count)
@@ -217,5 +219,3 @@ one.pack(side="bottom")
 #two.pack(side="left")
 
 root.mainloop()
-
-
